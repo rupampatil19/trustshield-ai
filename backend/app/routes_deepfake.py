@@ -2,6 +2,8 @@ import os
 import uuid
 import tempfile
 import cv2
+import numpy as np
+from PIL import Image
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.database import save_scan
@@ -28,7 +30,9 @@ async def deepfake_scan(file: UploadFile = File(...)):
     ext = os.path.splitext(file.filename)[1].lower()
     is_video = ext in ALLOWED_VIDEO_EXT
     is_image = ext in ALLOWED_IMAGE_EXT
-    if not (is_video or is_image): raise HTTPException(status_code=400, detail="Unsupported format")
+    
+    if not (is_video or is_image): 
+        raise HTTPException(status_code=400, detail="Unsupported format")
 
     content = await file.read()
     if not content: raise HTTPException(status_code=400, detail="Empty file")
@@ -43,8 +47,13 @@ async def deepfake_scan(file: UploadFile = File(...)):
         if is_video:
             result = analyze_video(tmp_path)
         else:
-            img = cv2.imread(tmp_path)
-            if img is None: raise HTTPException(status_code=400, detail="Could not read image.")
+            # Use Pillow to safely open and convert the image to a standard RGB array
+            try:
+                pil_img = Image.open(tmp_path).convert('RGB')
+                img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+            except Exception as e:
+                raise HTTPException(status_code=400, detail=f"Could not read image: {str(e)}")
+                
             height, width = img.shape[:2]
             detector = MockDetector()
             face_processor = get_default_face_processor(DEFAULT_CONFIG)
