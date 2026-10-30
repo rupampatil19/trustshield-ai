@@ -1,36 +1,27 @@
 /**
- * TrustShield AI — Cyber Resilience
+ * TrustShield AI - Cyber Resilience
  * API service layer
  *
- * Handles all HTTP communication with the FastAPI backend.
- * Uses axios for requests with sensible timeout and error handling.
+ * Base URL resolution:
+ *   Development (no VITE_API_URL):  relative paths -> Vite dev proxy forwards to localhost:8000
+ *   Production  (VITE_API_URL set): absolute URL    -> direct call to deployed backend
  *
- * Security note:
- * - Never constructs HTTP requests to the analysed URLs
- * - Only posts URL strings to the backend analysis endpoint
- * - Input validation is done server-side via Pydantic
+ * VITE_API_URL is baked in at build time by Vite. Changing it requires a redeploy.
  */
 
 import axios, { AxiosError } from 'axios';
 import type { URLScanResponse, MessageScanResponse } from '../types/api';
 
-// Backend base URL — in development, Vite proxies /api to localhost:8000
-const API_BASE = '/api/v1/cyber';
+const API_ORIGIN = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, '') || '';
+
+const API_BASE = API_ORIGIN ? `${API_ORIGIN}/api/v1/cyber` : '/api/v1/cyber';
 
 const apiClient = axios.create({
   baseURL: API_BASE,
-  timeout: 30000, // 30 seconds — allows for TI lookups
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  timeout: 30000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-/**
- * Submit a URL for phishing analysis.
- *
- * SECURITY: This sends the URL as a string in a JSON request body.
- * The browser never navigates to or fetches the URL itself.
- */
 export async function analyseURL(url: string): Promise<URLScanResponse> {
   try {
     const response = await apiClient.post<URLScanResponse>('/url-scans', { url });
@@ -40,9 +31,6 @@ export async function analyseURL(url: string): Promise<URLScanResponse> {
   }
 }
 
-/**
- * Submit a message for phishing analysis.
- */
 export async function analyseMessage(message: string): Promise<MessageScanResponse> {
   try {
     const response = await apiClient.post<MessageScanResponse>('/message-scans', { message });
@@ -52,9 +40,6 @@ export async function analyseMessage(message: string): Promise<MessageScanRespon
   }
 }
 
-/**
- * Generate personalized incident response guidance.
- */
 export async function getIncidentGuidance(
   indicatorCodes: string[],
   context: 'URL' | 'MESSAGE'
@@ -70,13 +55,7 @@ export async function getIncidentGuidance(
   }
 }
 
-/**
- * Generate a structured investigation report.
- */
-export async function generateReport(
-  scanType: 'url' | 'message',
-  scanData: any
-): Promise<any> {
+export async function generateReport(scanType: 'url' | 'message', scanData: any): Promise<any> {
   try {
     const response = await apiClient.post('/generate-report', {
       scan_type: scanType,
@@ -89,41 +68,60 @@ export async function generateReport(
 }
 
 /**
- * Check backend health.
- * Used to show connection status in the dashboard.
+ * Run the video deepfake pipeline on an uploaded file.
+ * Uses the base axios instance (not apiClient) so FormData can set its
+ * own multipart boundary -- the JSON Content-Type on apiClient would break uploads.
  */
+export async function scanDeepfakeVideo(file: File): Promise<any> {
+  try {
+    const form = new FormData();
+    form.append('file', file);
+    const response = await axios.post(
+      `${API_ORIGIN}/api/v1/media/deepfake-scan`,
+      form,
+      { timeout: 120000 }
+    );
+    return response.data;
+  } catch (error) {
+    throw extractError(error, 'Deepfake scan failed');
+  }
+}
+
+/** Health check used by the sidebar status indicator. */
 export async function checkHealth(): Promise<boolean> {
   try {
-    await axios.get('/health', { timeout: 5000 });
+    await axios.get(`${API_ORIGIN}/api/v1/health`, { timeout: 5000 });
     return true;
   } catch {
     return false;
   }
 }
 
-/**
- * Extract a human-readable error message from an axios error.
- */
+/** Detailed health info for the Dashboard card. */
+export async function getHealthDetail(): Promise<any> {
+  const r = await axios.get(`${API_ORIGIN}/api/v1/health`, { timeout: 5000 });
+  return r.data;
+}
+
 function extractError(error: unknown, fallback: string): Error {
   if (error instanceof AxiosError) {
     if (error.response) {
-      // Server returned an error response
       const detail = error.response.data?.detail || error.response.data?.error;
       if (detail) {
         if (Array.isArray(detail)) {
-          // Pydantic validation errors
           const messages = detail.map((d: { msg: string }) => d.msg).join('; ');
-          return new Error(`Validation error: ${messages}`);
+          return new Error('Validation error: ' + messages);
         }
         return new Error(String(detail));
       }
-      return new Error(`Server error (${error.response.status}): ${error.response.statusText}`);
+      return new Error(
+        'Server error (' + error.response.status + '): ' + error.response.statusText
+      );
     } else if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-      return new Error('Request timed out. The backend may be busy. Please try again.');
+      return new Error('Request timed out. Please try again.');
     } else if (error.code === 'ERR_NETWORK' || !error.response) {
       return new Error(
-        'Cannot reach the backend server. ' +
-        'Ensure the FastAPI backend is running on http://localhost:8000.'
+        'Cannot reach the backend server. Ensure FastAPI is running on http://localhost:8000.'
       );
     }
   }
