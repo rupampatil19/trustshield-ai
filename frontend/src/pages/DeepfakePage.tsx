@@ -64,8 +64,8 @@ export default function DeepfakePage() {
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent opacity-80" />
         <h1 className="text-2xl font-bold text-white mb-2">Deepfake Video Analysis</h1>
         <p className="text-slate-400 text-sm mb-6 max-w-2xl">
-          Upload a video to run the full pipeline: validation \u2192 frame sampling
-          \u2192 face detection \u2192 detector inference \u2192 aggregation \u2192 evidence
+          Upload a video to run the full pipeline: validation &rarr; frame sampling
+          &rarr; face detection &rarr; detector inference &rarr; aggregation &rarr; evidence
           generation. The result includes model version and explicit limitations.
         </p>
 
@@ -82,7 +82,7 @@ export default function DeepfakePage() {
               disabled={loading}
             />
             <p className="mt-1.5 text-xs text-slate-500">
-              Supported: mp4, mov, avi, mkv, webm \u00B7 Max 100 MB
+              Supported: mp4, mov, avi, mkv, webm &middot; Max 100 MB
             </p>
           </label>
           <button
@@ -93,7 +93,7 @@ export default function DeepfakePage() {
             {loading ? (
               <>
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Running pipeline\u2026
+                Running pipeline&hellip;
               </>
             ) : (
               'Run Deepfake Pipeline'
@@ -114,7 +114,7 @@ export default function DeepfakePage() {
           {result.model?.is_mock && (
             <div className="glass-panel p-4 border-amber-500/40 bg-amber-500/5">
               <div className="flex items-start gap-3">
-                <span className="text-amber-400 text-xl">\u26A0</span>
+                <span className="text-amber-400 text-xl">&uarr;</span>
                 <div>
                   <p className="font-semibold text-amber-400 text-sm">
                     Mock detector in use
@@ -146,13 +146,13 @@ export default function DeepfakePage() {
               <div className="bg-slate-800/40 rounded-lg p-3">
                 <div className="text-xs text-slate-500">Frames analyzed</div>
                 <div className="font-mono text-slate-100 text-lg">
-                  {result.frames_analyzed ?? '\u2014'}
+                  {result.frames_analyzed ?? '&mdash;'}
                 </div>
               </div>
               <div className="bg-slate-800/40 rounded-lg p-3">
                 <div className="text-xs text-slate-500">Unscorable</div>
                 <div className="font-mono text-slate-100 text-lg">
-                  {result.frames_unscorable ?? '\u2014'}
+                  {result.frames_unscorable ?? '&mdash;'}
                 </div>
               </div>
               <div className="bg-slate-800/40 rounded-lg p-3">
@@ -160,7 +160,7 @@ export default function DeepfakePage() {
                 <div className="font-mono text-slate-100 text-lg">
                   {result.aggregation?.mean_score != null
                     ? result.aggregation.mean_score.toFixed(4)
-                    : '\u2014'}
+                    : '&mdash;'}
                 </div>
               </div>
               <div className="bg-slate-800/40 rounded-lg p-3">
@@ -168,7 +168,7 @@ export default function DeepfakePage() {
                 <div className="font-mono text-slate-100 text-lg">
                   {result.runtime_seconds != null
                     ? result.runtime_seconds.toFixed(2) + 's'
-                    : '\u2014'}
+                    : '&mdash;'}
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function DeepfakePage() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-slate-400">
                   <div>
                     <span className="text-slate-500">Resolution:</span>{' '}
-                    {result.video.width}\u00D7{result.video.height}
+                    {result.video.width}&times;{result.video.height}
                   </div>
                   <div>
                     <span className="text-slate-500">FPS:</span> {result.video.fps}

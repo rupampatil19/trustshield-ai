@@ -21,7 +21,7 @@ const MODULES = [
     to: '/deepfake',
     icon: '\uD83C\uDFAC',
     title: 'Deepfake Video',
-    desc: 'Run the video pipeline: validation \u2192 frame sampling \u2192 face detection \u2192 detector inference \u2192 aggregation.',
+    desc: 'Run the video pipeline: validation &rarr; frame sampling &rarr; face detection &rarr; detector inference &rarr; aggregation.',
     tag: 'Deepfake Detection',
   },
   {
@@ -55,7 +55,7 @@ export default function DashboardPage() {
         <p className="text-slate-400 mt-2 max-w-3xl leading-relaxed">
           One investigation platform combining deepfake detection, phishing analysis,
           and digital trust verification. Every result includes explicit limitations
-          and is designed to support \u2014 not replace \u2014 human judgement.
+          and is designed to support &mdash; not replace &mdash; human judgement.
         </p>
       </div>
 
@@ -76,7 +76,7 @@ export default function DashboardPage() {
               {m.title}
             </h2>
             <p className="text-sm text-slate-400 mt-2 leading-relaxed">{m.desc}</p>
-            <p className="text-xs text-cyan-500 mt-4 font-medium">Open \u2192</p>
+            <p className="text-xs text-cyan-500 mt-4 font-medium">Open &rarr;</p>
           </Link>
         ))}
       </div>
@@ -127,7 +127,7 @@ export default function DashboardPage() {
         </h3>
         <ul className="text-sm text-slate-400 space-y-1.5 list-disc list-inside">
           <li>
-            No result is a guarantee of authenticity or safety \u2014 false positives
+            No result is a guarantee of authenticity or safety &mdash; false positives
             and false negatives are possible.
           </li>
           <li>

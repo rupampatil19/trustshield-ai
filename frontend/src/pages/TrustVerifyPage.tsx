@@ -52,7 +52,7 @@ export default function TrustVerifyPage() {
         <h1 className="text-2xl font-bold text-white mb-2">Trust Verification</h1>
         <p className="text-slate-400 text-sm mb-6 max-w-2xl">
           Compute SHA-256 hashes to verify file integrity. A matching hash proves
-          two files are byte-identical \u2014 it does{' '}
+          two files are byte-identical &mdash; it does{' '}
           <em className="text-cyan-400">not</em> prove the content is authentic
           or true. All computation happens in your browser.
         </p>
@@ -70,7 +70,7 @@ export default function TrustVerifyPage() {
             />
             {fileA && (
               <p className="mt-1.5 text-xs text-slate-500">
-                {fileA.name} \u00B7 {formatBytes(fileA.size)} \u00B7{' '}
+                {fileA.name} &middot; {formatBytes(fileA.size)} &middot;{' '}
                 {fileA.type || 'unknown type'}
               </p>
             )}
@@ -78,7 +78,7 @@ export default function TrustVerifyPage() {
 
           <label className="block">
             <span className="block text-sm font-medium text-slate-300 mb-2">
-              File B (optional \u2014 for comparison)
+              File B (optional &mdash; for comparison)
             </span>
             <input
               type="file"
@@ -88,7 +88,7 @@ export default function TrustVerifyPage() {
             />
             {fileB && (
               <p className="mt-1.5 text-xs text-slate-500">
-                {fileB.name} \u00B7 {formatBytes(fileB.size)} \u00B7{' '}
+                {fileB.name} &middot; {formatBytes(fileB.size)} &middot;{' '}
                 {fileB.type || 'unknown type'}
               </p>
             )}
@@ -99,7 +99,7 @@ export default function TrustVerifyPage() {
             disabled={!fileA || loading}
             className="btn-primary w-full"
           >
-            {loading ? 'Computing SHA-256\u2026' : 'Compute SHA-256'}
+            {loading ? 'Computing SHA-256&hellip;' : 'Compute SHA-256'}
           </button>
         </form>
       </div>
@@ -114,7 +114,7 @@ export default function TrustVerifyPage() {
         <div className="glass-panel p-6 space-y-4 animate-fade-in">
           <div>
             <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">
-              File A \u2014 SHA-256
+              File A &mdash; SHA-256
             </p>
             <code className="block text-sm font-mono text-cyan-300 break-all bg-slate-950/60 p-3 rounded-lg border border-slate-800">
               {hashA}
@@ -124,7 +124,7 @@ export default function TrustVerifyPage() {
           {hashB && (
             <div>
               <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">
-                File B \u2014 SHA-256
+                File B &mdash; SHA-256
               </p>
               <code className="block text-sm font-mono text-cyan-300 break-all bg-slate-950/60 p-3 rounded-lg border border-slate-800">
                 {hashB}
@@ -152,7 +152,7 @@ export default function TrustVerifyPage() {
             <p>
               <strong className="text-slate-400">What this does not prove:</strong>{' '}
               that the file contents are authentic, unmanipulated, or truthful.
-              Integrity \u2260 authenticity. C2PA Content Credentials (not yet
+              Integrity is not the same as authenticity. C2PA Content Credentials (not yet
               integrated) would provide provenance evidence.
             </p>
           </div>
