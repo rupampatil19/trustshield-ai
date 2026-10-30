@@ -1,11 +1,15 @@
 import { useState } from "react";
-import "./App.css";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import "./App.verisafe.css";
+
+const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 const sections = [
   { id: "media", icon: "◈", name: "Media Scan", description: "Check images and videos" },
-  { id: "cyber", icon: "⌁", name: "Cyber Scan", description: "Check suspicious links and messages" },
+  { id: "cyber", icon: "Ⱏ", name: "Cyber Scan", description: "Check suspicious links and messages" },
   { id: "trust", icon: "◇", name: "Trust Checks", description: "Inspect integrity and provenance" },
-  { id: "history", icon: "◷", name: "Scan History", description: "Review previous scans" },
+  { id: "history", icon: "◯", name: "Scan History", description: "Review previous scans" },
 ];
 
 function App() {
@@ -13,27 +17,61 @@ function App() {
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
-  const [notice, setNotice] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
   function handleFile(event) {
     setFile(event.target.files?.[0] || null);
-    setNotice("");
+    setResult(null);
   }
 
-  function handleDemo() {
-    setNotice(
-      "Interface preview only. Detection is not connected yet, so no authenticity verdict has been produced."
-    );
+  async function handleScan() {
+    setLoading(true);
+    setResult(null);
+    try {
+      if (active === "media") {
+        if (!file) return alert("Select a file first.");
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await axios.post(`${API_ORIGIN}/api/legacy/api/v1/media/scans`, fd);
+        setResult(res.data);
+      } else if (active === "cyber") {
+        if (url) {
+          const res = await axios.post(`${API_ORIGIN}/api/legacy/api/v1/cyber/url-scans`, { url });
+          setResult(res.data);
+        } else if (message) {
+          const res = await axios.post(`${API_ORIGIN}/api/legacy/api/v1/cyber/message-scans`, { message });
+          setResult(res.data);
+        } else {
+          alert("Enter a URL or a message.");
+        }
+      } else if (active === "history") {
+        const res = await axios.get(`${API_ORIGIN}/api/legacy/api/v1/scans`);
+        setResult(res.data);
+      } else if (active === "trust") {
+        setResult({ message: "The Trust Checks module was a UI preview in the original VeriSafe repository and was not connected to a backend endpoint." });
+      }
+    } catch (err) {
+      setResult({ error: err.response?.data?.detail || err.message });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="app-shell">
+      <div style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 9999 }}>
+        <Link to="/" style={{ background: "#3b82f6", color: "white", padding: "0.5rem 1rem", borderRadius: "0.5rem", textDecoration: "none", fontWeight: "bold", fontSize: "0.875rem", boxShadow: "0 4px 6px rgba(0,0,0,0.3)" }}>
+          &larr; Back to Unified App
+        </Link>
+      </div>
+
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark">T</div>
           <div>
             <h2>TrustShield</h2>
-            <span>AI • DIGITAL TRUST</span>
+            <span>AI â€¢ DIGITAL TRUST</span>
           </div>
         </div>
 
@@ -45,7 +83,7 @@ function App() {
               className={`nav-item ${active === section.id ? "active" : ""}`}
               onClick={() => {
                 setActive(section.id);
-                setNotice("");
+                setResult(null);
               }}
             >
               <span className="nav-icon">{section.icon}</span>
@@ -57,18 +95,18 @@ function App() {
         <div className="sidebar-footer">
           <span className="status-dot" />
           Backend configured
-          <small>Local development preview</small>
+          <small>Legacy UI Mode</small>
         </div>
       </aside>
 
       <main className="main-content">
         <header className="topbar">
           <span>Trust & Safety Workspace</span>
-          <span className="preview-badge">DEVELOPMENT PREVIEW</span>
+          <span className="preview-badge">LEGACY INTEGRATION</span>
         </header>
 
         <section className="welcome">
-          <p className="eyebrow">RESPONSIBLE AI · CYBER RESILIENCE</p>
+          <p className="eyebrow">RESPONSIBLE AI Â· CYBER RESILIENCE</p>
           <h1>Trust what you see.<br /><span>Verify what you share.</span></h1>
           <p className="subtitle">
             Examine digital media, investigate suspicious content, and review
@@ -83,13 +121,13 @@ function App() {
               className={`module-card ${active === section.id ? "selected" : ""}`}
               onClick={() => {
                 setActive(section.id);
-                setNotice("");
+                setResult(null);
               }}
             >
               <span className="card-icon">{section.icon}</span>
               <strong>{section.name}</strong>
               <span className="card-description">{section.description}</span>
-              <span className="card-arrow">↗</span>
+              <span className="card-arrow">â†—</span>
             </button>
           ))}
         </section>
@@ -100,23 +138,21 @@ function App() {
               <p className="eyebrow">WORKSPACE / {active.toUpperCase()}</p>
               <h2>{sections.find((item) => item.id === active)?.name}</h2>
             </div>
-            <span className="mock-label">DETECTION NOT CONNECTED</span>
+            <span className="mock-label" style={{ color: "#10b981", borderColor: "#10b981" }}>
+              LIVE BACKEND CONNECTED
+            </span>
           </div>
 
           {active === "media" && (
             <div className="scan-form">
               <label className="upload-area">
-                <span className="upload-icon">↑</span>
+                <span className="upload-icon">â†‘</span>
                 <strong>{file ? file.name : "Choose an image or video"}</strong>
                 <span>Use a local file to preview the upload interface.</span>
-                <input
-                  type="file"
-                  accept="image/*,video/*"
-                  onChange={handleFile}
-                />
+                <input type="file" accept="image/*,video/*" onChange={handleFile} />
               </label>
-              <button className="primary-button" onClick={handleDemo}>
-                Preview scan workflow
+              <button className="primary-button" onClick={handleScan} disabled={loading}>
+                {loading ? "Processing..." : "Run Media Scan"}
               </button>
             </div>
           )}
@@ -138,8 +174,8 @@ function App() {
                 placeholder="Paste a suspicious message here"
                 rows={4}
               />
-              <button className="primary-button" onClick={handleDemo}>
-                Preview scan workflow
+              <button className="primary-button" onClick={handleScan} disabled={loading}>
+                {loading ? "Processing..." : "Run Cyber Scan"}
               </button>
             </div>
           )}
@@ -148,32 +184,36 @@ function App() {
             <div className="info-panel">
               <strong>Digital evidence checks</strong>
               <p>
-                The planned module will examine file hashes and available
-                content provenance credentials. These checks are not connected
-                yet.
+                This module was a UI preview in the original VeriSafe repository.
               </p>
-              <button className="primary-button" onClick={handleDemo}>
-                Preview trust workflow
+              <button className="primary-button" onClick={handleScan} disabled={loading}>
+                Check Trust Status
               </button>
             </div>
           )}
 
           {active === "history" && (
             <div className="info-panel">
-              <strong>No scan records yet</strong>
-              <p>
-                Scan history will appear here once the history API and database
-                are connected.
-              </p>
+              <strong>Scan History API</strong>
+              <p>Fetch records from the mounted VeriSafe database.</p>
+              <button className="primary-button" onClick={handleScan} disabled={loading}>
+                Fetch History
+              </button>
             </div>
           )}
 
-          {notice && <div className="notice" role="status">{notice}</div>}
+          {result && (
+            <div className="info-panel" style={{ marginTop: "2rem", overflowX: "auto" }}>
+              <strong>Backend Response:</strong>
+              <pre style={{ background: "#0f172a", padding: "1rem", borderRadius: "0.5rem", fontSize: "0.875rem", color: "#38bdf8", marginTop: "1rem" }}>
+                {JSON.stringify(result, null, 2)}
+              </pre>
+            </div>
+          )}
         </section>
 
         <footer>
-          TrustShield AI · Prototype interface · Results require validated
-          detection services.
+          TrustShield AI Â· Legacy UI Integration Â· Results require validated detection services.
         </footer>
       </main>
     </div>

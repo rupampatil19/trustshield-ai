@@ -8,6 +8,7 @@ const NAV = [
   { to: '/message', label: 'Message Scanner', icon: '\u2709' },
   { to: '/deepfake', label: 'Deepfake Video', icon: '\uD83C\uDFAC' },
   { to: '/trust', label: 'Trust Verify', icon: '\uD83D\uDD10' },
+  { to: '/verisafe', label: 'VeriSafe (Legacy)', icon: '\uD83D\uDEE1\uFE0F' },
 ];
 
 export default function Layout() {
