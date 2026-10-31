@@ -14,10 +14,25 @@ class RealDetector(BaseDetector):
     MODEL_NAME = "MobileNetV3-Large"
     MODEL_VERSION = "seed_42"
     THRESHOLD = 0.2525
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(RealDetector, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if self._initialized:
+            return
+        
+        # Force CPU and limit threads to save memory on Render
+        import torch
+        torch.set_num_threads(1)
+        self.device = torch.device("cpu")
+        
         self.model = self._load_model()
+        self._initialized = True
         self.preprocess = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor(),

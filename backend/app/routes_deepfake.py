@@ -56,7 +56,7 @@ async def deepfake_scan(file: UploadFile = File(...), user: dict = Depends(get_c
                 raise HTTPException(status_code=400, detail=f"Could not read image: {str(e)}")
                 
             height, width = img.shape[:2]
-            detector = RealDetector()
+            detector = RealDetector() # Uses singleton instance
             face_processor = get_default_face_processor(DEFAULT_CONFIG)
             
             if hasattr(face_processor, 'extract_face_and_bbox'):
