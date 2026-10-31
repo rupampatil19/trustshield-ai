@@ -11,7 +11,7 @@ export default function DashboardPage() {
     async function fetchStats() {
       try {
         const token = localStorage.getItem('ts_token');
-        const res = await axios.(${API_ORIGIN}/api/v1/investigations', {
+        const res = await axios.get(`${API_ORIGIN}/api/v1/investigations`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
