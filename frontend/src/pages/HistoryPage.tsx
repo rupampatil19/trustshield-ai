@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 
 export default function HistoryPage() {
   const [data, setData] = useState<any[]>([]);
@@ -13,7 +13,7 @@ export default function HistoryPage() {
     setError(null);
     try {
       const token = localStorage.getItem('ts_token');
-      const res = await axios.get(`${API_ORIGIN}/api/v1/investigations`, { 
+      const res = await axios.get(`/api/v1/investigations`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -18,7 +18,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(''); setLoading(true);
     try {
-      const res = await axios.post(`${API_ORIGIN}/api/v1/auth/register`, { name, email, password });
+      const res = await axios.post(`/api/v1/auth/register`, { name, email, password });
       login(res.data.token, res.data.user);
       navigate('/');
     } catch (err: any) {

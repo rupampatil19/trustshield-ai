@@ -1,4 +1,4 @@
-﻿# Union of Cyber-Resilience + TrushsheildAI + core FastAPI requirements.
+# Union of Cyber-Resilience + TrushsheildAI + core FastAPI requirements.
 # Exact pins from requirements.cyber.txt preserved except fastapi/uvicorn,
 # which are left unpinned because the pinned versions look non-standard
 # and may fail to resolve on pypi.
@@ -22,7 +22,7 @@ Pillow==10.4.0
 PyJWT
 bcrypt
 email-validator
-torch
-torchvision
 c2pa-python
 Pillow
+onnxruntime
+onnx

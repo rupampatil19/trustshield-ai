@@ -154,7 +154,7 @@ export default function URLAnalysisPage() {
                  Download PDF Report
                </button>
                <button onClick={handleIncidentResponse} disabled={incidentLoading} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
-                 {incidentLoading ? 'Loading...' : '🚨 Emergency Response'}
+                 {incidentLoading ? 'Loading...' : 'ðŸš¨ Emergency Response'}
                </button>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function URLAnalysisPage() {
                 {data.evidence?.map((ind: any, i: number) => (
                   <li key={i} className="flex flex-col gap-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-100">
                     <div className="flex gap-2 items-center">
-                      <span className="text-purple-500 font-bold">•</span> 
+                      <span className="text-purple-500 font-bold">â€¢</span> 
                       <strong className="text-slate-900">{ind.code}</strong>
                     </div>
                     <p className="pl-5 text-slate-600">{ind.description}</p>

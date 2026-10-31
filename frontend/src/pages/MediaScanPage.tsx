@@ -102,7 +102,7 @@ export default function MediaScanPage() {
                   <div className={`p-4 rounded-xl border col-span-2 md:col-span-1 ${result.label?.toLowerCase() === 'flagged_for_review' ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
                      <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${result.label?.toLowerCase() === 'flagged_for_review' ? 'text-red-600' : 'text-emerald-600'}`}>Fake Probability</p>
                      <p className={`text-4xl font-black ${result.label?.toLowerCase() === 'flagged_for_review' ? 'text-red-700' : 'text-emerald-700'}`}>
-                        {result.aggregation?.mean_score !== undefined && result.aggregation?.mean_score !== null ? (result.aggregation.mean_score * 100).toFixed(1) + '%' : 'Ã¢â‚¬â€'}
+                        {result.aggregation?.mean_score !== undefined && result.aggregation?.mean_score !== null ? (result.aggregation.mean_score * 100).toFixed(1) + '%' : 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â'}
                      </p>
                   </div>
                   

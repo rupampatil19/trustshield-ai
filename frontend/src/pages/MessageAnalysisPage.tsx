@@ -152,7 +152,7 @@ export default function MessageAnalysisPage() {
                  Download PDF Report
                </button>
                <button onClick={handleIncidentResponse} disabled={incidentLoading} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
-                 {incidentLoading ? 'Loading...' : '🚨 Emergency Response'}
+                 {incidentLoading ? 'Loading...' : 'ðŸš¨ Emergency Response'}
                </button>
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function MessageAnalysisPage() {
               <ul className="space-y-2">
                 {data.evidence?.map((ind: any, i: number) => (
                   <li key={i} className="flex gap-3 text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-purple-500 font-bold">•</span> 
+                    <span className="text-purple-500 font-bold">â€¢</span> 
                     <span><strong className="text-slate-900">{ind.code}:</strong> {ind.description} <span className="text-slate-400 text-xs ml-2">"{ind.matched_text}"</span></span>
                   </li>
                 ))}

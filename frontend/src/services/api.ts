@@ -1,11 +1,11 @@
 import axios, { AxiosError } from 'axios';
 import type { URLScanResponse, MessageScanResponse } from '../types/api';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 
 // Create a single Axios instance for all API calls
 const api = axios.create({
-  baseURL: API_ORIGIN,
+  baseURL: '',
   timeout: 30000,
 });
 
