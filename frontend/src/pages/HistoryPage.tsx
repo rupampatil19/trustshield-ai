@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_ORIGIN = 'https://trustshield-ai-d06y.onrender.com';
 
 export default function HistoryPage() {
   const [data, setData] = useState<any[]>([]);

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_ORIGIN = 'https://trustshield-ai-d06y.onrender.com';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_ORIGIN = 'https://trustshield-ai-d06y.onrender.com';
 
 export default function TrustVerifyPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -98,7 +98,7 @@ export default function TrustVerifyPage() {
               <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Responsible AI Notice</h4>
               <ul className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 {data.limitations?.map((lim: string, i: number) => (
-                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">•</span> {lim}</li>
+                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">â€¢</span> {lim}</li>
                 ))}
               </ul>
             </div>

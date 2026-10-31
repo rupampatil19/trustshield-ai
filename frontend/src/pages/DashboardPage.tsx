@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_ORIGIN = 'https://trustshield-ai-d06y.onrender.com';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ media: 0, cyber: 0, trust: 0, total: 0 });
