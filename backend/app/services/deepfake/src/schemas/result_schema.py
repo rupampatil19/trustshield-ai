@@ -1,8 +1,8 @@
 """
-TrustShield AI — Member 3 — Schemas
+TrustShield AI â€” Member 3 â€” Schemas
 src/schemas/result_schema.py
 
-All data structures for the pipeline — typed dataclasses, JSON serializable.
+All data structures for the pipeline â€” typed dataclasses, JSON serializable.
 Every module produces and consumes these types.
 
 Design principle:
@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 
-# ─── Video Metadata ───────────────────────────────────────────────────────────
+# â”€â”€â”€ Video Metadata â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class VideoMetadata:
@@ -34,7 +34,7 @@ class VideoMetadata:
         return dataclasses.asdict(self)
 
 
-# ─── Sampled Frame ────────────────────────────────────────────────────────────
+# â”€â”€â”€ Sampled Frame â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class SampledFrame:
@@ -43,7 +43,7 @@ class SampledFrame:
     """Original frame index in the video (0-based)."""
     timestamp_seconds: float
     """Precise timestamp within the video in seconds."""
-    image: Any  # numpy ndarray — not serializable, excluded from JSON output
+    image: Any  # numpy ndarray â€” not serializable, excluded from JSON output
 
     def to_dict(self) -> dict:
         """Returns a JSON-serializable dict (excludes raw image data)."""
@@ -53,7 +53,7 @@ class SampledFrame:
         }
 
 
-# ─── Detector Output ──────────────────────────────────────────────────────────
+# â”€â”€â”€ Detector Output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class DetectorOutput:
@@ -68,7 +68,7 @@ class DetectorOutput:
     model_version: str
     """Version string of the detector."""
     score_type: str
-    """Semantic label for the score — e.g. 'model_score', never 'probability'."""
+    """Semantic label for the score â€” e.g. 'model_score', never 'probability'."""
     is_mock: bool = True
     """True if this result came from the mock detector."""
 
@@ -76,7 +76,7 @@ class DetectorOutput:
         return dataclasses.asdict(self)
 
 
-# ─── Frame Result ─────────────────────────────────────────────────────────────
+# â”€â”€â”€ Frame Result â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 FRAME_STATUS_SCORED = "scored"
 FRAME_STATUS_UNSCORABLE = "unscorable"
@@ -89,9 +89,9 @@ class FrameResult:
     Analysis result for a single sampled frame.
 
     Status values:
-        scored      — detector successfully returned a score
-        unscorable  — frame could not be scored (e.g. no face found)
-        failed      — detector raised an error
+        scored      â€” detector successfully returned a score
+        unscorable  â€” frame could not be scored (e.g. no face found)
+        failed      â€” detector raised an error
     """
     frame_index: int
     timestamp_seconds: float
@@ -122,7 +122,7 @@ class FrameResult:
         }
 
 
-# ─── Aggregation Result ───────────────────────────────────────────────────────
+# â”€â”€â”€ Aggregation Result â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class AggregationResult:
@@ -162,7 +162,7 @@ class AggregationResult:
         }
 
 
-# ─── Evidence Result ──────────────────────────────────────────────────────────
+# â”€â”€â”€ Evidence Result â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class EvidenceResult:
@@ -188,7 +188,7 @@ class EvidenceResult:
         }
 
 
-# ─── Video Label ──────────────────────────────────────────────────────────────
+# â”€â”€â”€ Video Label â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 LABEL_FLAGGED = "flagged_for_review"
 LABEL_SUSPICIOUS = "suspicious"
@@ -196,8 +196,8 @@ LABEL_INCONCLUSIVE = "inconclusive"
 LABEL_ERROR = "error"
 
 LIMITATIONS = [
-    "Results are indicative only — not a forensic determination.",
-    "Mock detector in use — DEVELOPMENT MODE ONLY.",
+    "Results are indicative only â€” not a forensic determination.",
+    "Mock detector in use â€” DEVELOPMENT MODE ONLY.",
     "Frame sampling may miss brief manipulations between sampled frames.",
     "Face-based detection depends on face visibility and quality.",
     "Highly compressed or low-resolution video reduces reliability.",
@@ -205,7 +205,7 @@ LIMITATIONS = [
 ]
 
 
-# ─── Final Video Analysis Result ─────────────────────────────────────────────
+# â”€â”€â”€ Final Video Analysis Result â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @dataclass
 class VideoAnalysisResult:

@@ -22,3 +22,5 @@ Pillow==10.4.0
 PyJWT
 bcrypt
 email-validator
+torch
+torchvision

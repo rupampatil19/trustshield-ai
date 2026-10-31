@@ -11,7 +11,7 @@ from app.auth import get_current_user
 from fastapi import Depends
 
 from src.pipeline import analyze_video, _determine_label
-from src.detector.mock_detector import MockDetector
+from src.detector.real_detector import RealDetector
 from src.face.face_processor import get_default_face_processor
 from src.config import DEFAULT_CONFIG
 from src.analysis.aggregator import aggregate_frame_results
@@ -57,7 +57,7 @@ async def deepfake_scan(file: UploadFile = File(...), user: dict = Depends(get_c
                 raise HTTPException(status_code=400, detail=f"Could not read image: {str(e)}")
                 
             height, width = img.shape[:2]
-            detector = MockDetector()
+            detector = RealDetector()
             face_processor = get_default_face_processor(DEFAULT_CONFIG)
             face = face_processor.extract_face(img)
             metadata = VideoMetadata(width=width, height=height, fps=0, frame_count=1, duration_seconds=0, codec="IMAGE", container=ext.lstrip(".").upper())
