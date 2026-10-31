@@ -114,6 +114,8 @@ async def deepfake_scan(file: UploadFile = File(...), user: dict = Depends(get_c
 
         return result
     except Exception as exc:
+        import traceback
+        traceback.print_exc() # <--- THIS WILL PRINT TO RENDER LOGS
         raise HTTPException(status_code=500, detail="Pipeline error: " + str(exc))
     finally:
         if tmp_path and os.path.exists(tmp_path):
