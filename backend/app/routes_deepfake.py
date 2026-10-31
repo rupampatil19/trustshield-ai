@@ -7,6 +7,8 @@ from PIL import Image
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.database import save_scan
+from app.auth import get_current_user
+from fastapi import Depends
 
 from src.pipeline import analyze_video, _determine_label
 from src.detector.mock_detector import MockDetector
@@ -25,7 +27,7 @@ ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 MAX_BYTES = 100 * 1024 * 1024
 
 @router.post("/deepfake-scan")
-async def deepfake_scan(file: UploadFile = File(...)):
+async def deepfake_scan(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
     if not file.filename: raise HTTPException(status_code=400, detail="No file uploaded")
     ext = os.path.splitext(file.filename)[1].lower()
     is_video = ext in ALLOWED_VIDEO_EXT
@@ -80,7 +82,7 @@ async def deepfake_scan(file: UploadFile = File(...)):
         # SAVE TO DB
         result["scan_id"] = str(uuid.uuid4())
         result["module"] = "Deepfake Media"
-        save_scan(result)
+        save_scan(result, int(user["sub"]))
         
         return result
     except Exception as exc:

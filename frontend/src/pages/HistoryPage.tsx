@@ -10,7 +10,8 @@ export default function HistoryPage() {
   async function fetchHistory() {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_ORIGIN}/api/legacy/api/v1/scans`);
+      const token = localStorage.getItem('ts_token');
+      const res = await axios.get(`\$\{API_ORIGIN\}/api/v1/investigations`, { headers: { Authorization: `Bearer \$\{token\}` } });
       setData(res.data);
     } catch (err) { alert('Failed to fetch history'); } finally { setLoading(false); }
   }

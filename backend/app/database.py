@@ -15,12 +15,18 @@ def initialize_database():
         connection.execute("""
             CREATE TABLE IF NOT EXISTS scans (
                 scan_id TEXT PRIMARY KEY,
+                user_id INTEGER,
                 module TEXT NOT NULL,
                 status TEXT NOT NULL,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 result_json TEXT NOT NULL
             )
         """)
+        cursor = connection.execute("PRAGMA table_info(scans)")
+        columns = [col["name"] for col in cursor.fetchall()]
+        if "user_id" not in columns:
+            connection.execute("ALTER TABLE scans ADD COLUMN user_id INTEGER")
+
         connection.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,10 +36,8 @@ def initialize_database():
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
         """)
-        # Create a demo user if not exists
         cursor = connection.execute("SELECT id FROM users WHERE email = 'anushka@example.com'")
         if not cursor.fetchone():
-            # Using direct bcrypt instead of passlib to avoid compatibility errors
             salt = bcrypt.gensalt()
             hashed_pw = bcrypt.hashpw("password123".encode('utf-8'), salt).decode('utf-8')
             connection.execute(
@@ -62,13 +66,27 @@ def verify_password(plain_password, hashed_password):
     except Exception:
         return False
 
-def save_scan(scan):
+def save_scan(scan, user_id=None):
     with get_connection() as connection:
         connection.execute(
-            "INSERT OR REPLACE INTO scans (scan_id, module, status, result_json) VALUES (?, ?, ?, ?)",
-            (scan.get("scan_id"), scan.get("module", "Unknown"), scan.get("status", "completed"), json.dumps(scan)),
+            "INSERT OR REPLACE INTO scans (scan_id, user_id, module, status, result_json) VALUES (?, ?, ?, ?, ?)",
+            (scan.get("scan_id"), user_id, scan.get("module", "Unknown"), scan.get("status", "completed"), json.dumps(scan)),
         )
 
+def get_user_scans(user_id):
+    with get_connection() as connection:
+        rows = connection.execute(
+            "SELECT result_json, created_at FROM scans WHERE user_id = ? ORDER BY created_at DESC",
+            (user_id,)
+        ).fetchall()
+    results = []
+    for row in rows:
+        data = json.loads(row["result_json"])
+        data["_db_created_at"] = row["created_at"]
+        results.append(data)
+    return results
+
+# --- Restored for VeriSafe Legacy Compatibility ---
 def get_scan(scan_id):
     with get_connection() as connection:
         row = connection.execute("SELECT result_json FROM scans WHERE scan_id = ?", (scan_id,)).fetchone()

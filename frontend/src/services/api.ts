@@ -16,10 +16,12 @@ const API_ORIGIN = (import.meta.env.VITE_API_URL as string | undefined)?.replace
 
 const API_BASE = API_ORIGIN ? `${API_ORIGIN}/api/v1/cyber` : '/api/v1/cyber';
 
+const token = localStorage.getItem('ts_token');
+
 const apiClient = axios.create({
   baseURL: API_BASE,
   timeout: 30000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: { 'Content-Type': 'application/json', 'Authorization': token ? `Bearer ${token}` : '' },
 });
 
 export async function analyseURL(url: string): Promise<URLScanResponse> {
