@@ -3,8 +3,6 @@ import axios from 'axios';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
-
-
 export default function TrustVerifyPage() {
   const [file, setFile] = useState<File | null>(null);
   const [data, setData] = useState<any>(null);
@@ -19,7 +17,7 @@ export default function TrustVerifyPage() {
       const fd = new FormData();
       fd.append('file', file);
       
-      const res = await axios.post(`/api/v1/trust/verify`, fd, {
+      const res = await axios.post(`${API_ORIGIN}/api/v1/trust/verify`, fd, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       setData(res.data);
@@ -100,7 +98,7 @@ export default function TrustVerifyPage() {
               <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Responsible AI Notice</h4>
               <ul className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 {data.limitations?.map((lim: string, i: number) => (
-                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢</span> {lim}</li>
+                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">•</span> {lim}</li>
                 ))}
               </ul>
             </div>

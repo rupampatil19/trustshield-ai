@@ -3,8 +3,6 @@ import axios from 'axios';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
-
-
 export default function HistoryPage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -15,11 +13,10 @@ export default function HistoryPage() {
     setError(null);
     try {
       const token = localStorage.getItem('ts_token');
-      const res = await axios.get(`/api/v1/investigations`, { 
+      const res = await axios.get(`${API_ORIGIN}/api/v1/investigations`, { 
         headers: { Authorization: `Bearer ${token}` } 
       });
       
-      // Ensure it's an array
       if (Array.isArray(res.data)) {
         setData(res.data);
       } else {
@@ -72,26 +69,20 @@ export default function HistoryPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {data.map((scan: any, i: number) => {
-                  // Safely extract values with fallbacks
                   const label = scan?.label || scan?.status || 'N/A';
                   const isHigh = label.toUpperCase() === 'HIGH' || label.toLowerCase() === 'flagged_for_review';
                   const isMed = label.toUpperCase() === 'MEDIUM';
                   const moduleName = scan?.module || 'Unknown Module';
                   const target = scan?.url_analysed || scan?.message_preview || scan?._input_filename || scan?.filename || 'N/A';
                   
-                  // Safely format the date
                   let dateStr = 'Unknown Date';
                   if (scan?._db_created_at) {
-                      try {
-                          dateStr = new Date(scan._db_created_at).toLocaleString();
-                      } catch (e) {}
+                      try { dateStr = new Date(scan._db_created_at).toLocaleString(); } catch (e) {}
                   }
 
                   return (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-4 px-6 text-sm text-slate-600 whitespace-nowrap">
-                        {dateStr}
-                      </td>
+                      <td className="py-4 px-6 text-sm text-slate-600 whitespace-nowrap">{dateStr}</td>
                       <td className="py-4 px-6 text-sm font-medium text-slate-900">{moduleName}</td>
                       <td className="py-4 px-6 text-sm text-slate-600 max-w-xs truncate" title={target}>{target}</td>
                       <td className="py-4 px-6">
