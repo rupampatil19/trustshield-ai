@@ -7,7 +7,7 @@ export function generatePdfReport(scanType: string, data: any) {
   // Header
   doc.setFontSize(22);
   doc.setTextColor(15, 23, 42); // slate-900
-  doc.text("TrustShield AI - Investigation Report", 14, 20);
+  doc.text("VeriSafe - Investigation Report", 14, 20);
   
   doc.setFontSize(10);
   doc.setTextColor(100, 116, 139); // slate-500
