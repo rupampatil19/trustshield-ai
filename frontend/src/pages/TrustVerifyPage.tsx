@@ -100,7 +100,7 @@ export default function TrustVerifyPage() {
               <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Responsible AI Notice</h4>
               <ul className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
                 {data.limitations?.map((lim: string, i: number) => (
-                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢</span> {lim}</li>
+                  <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢</span> {lim}</li>
                 ))}
               </ul>
             </div>
