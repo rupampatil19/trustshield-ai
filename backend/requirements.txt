@@ -19,3 +19,6 @@ pytest-asyncio==1.4.0
 opencv-contrib-python==4.10.0.84
 numpy>=1.26.0
 Pillow==10.4.0
+PyJWT
+bcrypt
+email-validator
