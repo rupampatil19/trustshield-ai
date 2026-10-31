@@ -1,14 +1,14 @@
 """
-TrustShield AI — Member 3 — Frame Analyzer
+TrustShield AI â€” Member 3 â€” Frame Analyzer
 src/analysis/frame_analyzer.py
 
 Orchestrates the per-frame analysis pipeline:
-  SampledFrame → face extraction → detector → validation → FrameResult
+  SampledFrame â†’ face extraction â†’ detector â†’ validation â†’ FrameResult
 
 Rules:
   - No silent failures. Every error is captured in the FrameResult.
   - Unexpected detector output raises immediately (not silently passed through).
-  - No face detected → status='unscorable', NOT status='real'.
+  - No face detected â†’ status='unscorable', NOT status='real'.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ class FrameAnalyzer:
     """
     Analyzes a single sampled frame through the full analysis chain.
 
-    Dependencies injected through constructor — no global state.
+    Dependencies injected through constructor â€” no global state.
     """
 
     def __init__(
@@ -52,7 +52,7 @@ class FrameAnalyzer:
 
         Pipeline:
           1. Extract face from frame image
-          2. If no face → mark unscorable (NOT real)
+          2. If no face â†’ mark unscorable (NOT real)
           3. Call detector on face crop
           4. Validate detector output (score must be float in [0, 1])
           5. Return structured FrameResult
@@ -63,7 +63,7 @@ class FrameAnalyzer:
         Returns:
             FrameResult with status 'scored', 'unscorable', or 'failed'.
         """
-        # ── Step 1: Face extraction ────────────────────────────────────────────
+        # â”€â”€ Step 1: Face extraction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         try:
             face_image: Optional[np.ndarray] = self.face_processor.extract_face(frame.image)
         except Exception as exc:
@@ -75,7 +75,7 @@ class FrameAnalyzer:
                 is_mock=self.detector.is_mock,
             )
 
-        # ── Step 2: No face → unscorable ──────────────────────────────────────
+        # â”€â”€ Step 2: No face â†’ unscorable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if face_image is None:
             return FrameResult(
                 frame_index=frame.frame_index,
@@ -87,7 +87,7 @@ class FrameAnalyzer:
                 is_mock=self.detector.is_mock,
             )
 
-        # ── Step 3: Run detector ───────────────────────────────────────────────
+        # â”€â”€ Step 3: Run detector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         try:
             detector_output = self.detector.analyze(face_image)
         except DetectorError as exc:
@@ -111,7 +111,7 @@ class FrameAnalyzer:
                 is_mock=self.detector.is_mock,
             )
 
-        # ── Step 4: Validate detector output ──────────────────────────────────
+        # â”€â”€ Step 4: Validate detector output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         validation_error = _validate_detector_output(detector_output.model_score)
         if validation_error:
             return FrameResult(
@@ -122,9 +122,10 @@ class FrameAnalyzer:
                 model_name=detector_output.model_name,
                 model_version=detector_output.model_version,
                 is_mock=detector_output.is_mock,
+            heatmap_b64=detector_output.heatmap_b64,
             )
 
-        # ── Step 5: Success ────────────────────────────────────────────────────
+        # â”€â”€ Step 5: Success â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         return FrameResult(
             frame_index=frame.frame_index,
             timestamp_seconds=frame.timestamp_seconds,
@@ -134,10 +135,11 @@ class FrameAnalyzer:
             model_name=detector_output.model_name,
             model_version=detector_output.model_version,
             is_mock=detector_output.is_mock,
+            heatmap_b64=detector_output.heatmap_b64,
         )
 
 
-# ─── Validation helper ────────────────────────────────────────────────────────
+# â”€â”€â”€ Validation helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def _validate_detector_output(score: object) -> Optional[str]:
     """

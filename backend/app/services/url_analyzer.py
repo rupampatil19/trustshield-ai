@@ -1,12 +1,12 @@
 """
-TrustShield AI — Cyber Resilience Backend
+TrustShield AI â€” Cyber Resilience Backend
 URL Analysis Service
 
 Analyses a URL for phishing indicators using rule-based heuristics.
-Uses only urllib.parse (stdlib) for URL parsing — no external HTTP calls.
+Uses only urllib.parse (stdlib) for URL parsing â€” no external HTTP calls.
 
 Design decisions:
-- Each check is a separate method → easy to test individually
+- Each check is a separate method â†’ easy to test individually
 - Returns a list of URLIndicator objects + a raw score list
 - The risk_assessment service converts those into the final verdict
 - No indicator is treated as definitive proof on its own
@@ -115,7 +115,7 @@ class URLAnalyzer:
         return indicators, components
 
     # ----------------------------------------------------------
-    # Individual check methods — each returns List[URLIndicator]
+    # Individual check methods â€” each returns List[URLIndicator]
     # ----------------------------------------------------------
 
     def _check_scheme(
@@ -206,7 +206,7 @@ class URLAnalyzer:
 
     def _check_at_symbol(self, parsed) -> List[URLIndicator]:
         """
-        Detect @ in URL — browsers ignore everything before @ in the authority.
+        Detect @ in URL â€” browsers ignore everything before @ in the authority.
         E.g. http://legit.com@evil.com/ actually takes you to evil.com.
         """
         # netloc includes user info if present

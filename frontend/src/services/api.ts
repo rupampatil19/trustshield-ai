@@ -1,32 +1,26 @@
-/**
- * TrustShield AI - Cyber Resilience
- * API service layer
- *
- * Base URL resolution:
- *   Development (no VITE_API_URL):  relative paths -> Vite dev proxy forwards to localhost:8000
- *   Production  (VITE_API_URL set): absolute URL    -> direct call to deployed backend
- *
- * VITE_API_URL is baked in at build time by Vite. Changing it requires a redeploy.
- */
-
 import axios, { AxiosError } from 'axios';
 import type { URLScanResponse, MessageScanResponse } from '../types/api';
 
-const API_ORIGIN = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, '') || '';
+const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
-const API_BASE = API_ORIGIN ? `${API_ORIGIN}/api/v1/cyber` : '/api/v1/cyber';
-
-const token = localStorage.getItem('ts_token');
-
-const apiClient = axios.create({
-  baseURL: API_BASE,
+// Create a single Axios instance for all API calls
+const api = axios.create({
+  baseURL: API_ORIGIN,
   timeout: 30000,
-  headers: { 'Content-Type': 'application/json', 'Authorization': token ? `Bearer ${token}` : '' },
+});
+
+// Request interceptor: Automatically attach JWT token to every request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('ts_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export async function analyseURL(url: string): Promise<URLScanResponse> {
   try {
-    const response = await apiClient.post<URLScanResponse>('/url-scans', { url });
+    const response = await api.post<URLScanResponse>('/api/v1/cyber/url-scans', { url });
     return response.data;
   } catch (error) {
     throw extractError(error, 'URL analysis failed');
@@ -35,7 +29,7 @@ export async function analyseURL(url: string): Promise<URLScanResponse> {
 
 export async function analyseMessage(message: string): Promise<MessageScanResponse> {
   try {
-    const response = await apiClient.post<MessageScanResponse>('/message-scans', { message });
+    const response = await api.post<MessageScanResponse>('/api/v1/cyber/message-scans', { message });
     return response.data;
   } catch (error) {
     throw extractError(error, 'Message analysis failed');
@@ -47,7 +41,7 @@ export async function getIncidentGuidance(
   context: 'URL' | 'MESSAGE'
 ): Promise<any> {
   try {
-    const response = await apiClient.post('/incident-guidance', {
+    const response = await api.post('/api/v1/cyber/incident-guidance', {
       indicator_codes: indicatorCodes,
       context: context,
     });
@@ -59,7 +53,7 @@ export async function getIncidentGuidance(
 
 export async function generateReport(scanType: 'url' | 'message', scanData: any): Promise<any> {
   try {
-    const response = await apiClient.post('/generate-report', {
+    const response = await api.post('/api/v1/cyber/generate-report', {
       scan_type: scanType,
       scan_data: scanData,
     });
@@ -69,39 +63,31 @@ export async function generateReport(scanType: 'url' | 'message', scanData: any)
   }
 }
 
-/**
- * Run the video deepfake pipeline on an uploaded file.
- * Uses the base axios instance (not apiClient) so FormData can set its
- * own multipart boundary -- the JSON Content-Type on apiClient would break uploads.
- */
 export async function scanDeepfakeVideo(file: File): Promise<any> {
   try {
     const form = new FormData();
     form.append('file', file);
-    const response = await axios.post(
-      `${API_ORIGIN}/api/v1/media/deepfake-scan`,
-      form,
-      { timeout: 120000 }
-    );
+    const response = await api.post('/api/v1/media/deepfake-scan', form, {
+      timeout: 120000, // 2 mins for video processing
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
     return response.data;
   } catch (error) {
     throw extractError(error, 'Deepfake scan failed');
   }
 }
 
-/** Health check used by the sidebar status indicator. */
 export async function checkHealth(): Promise<boolean> {
   try {
-    await axios.get(`${API_ORIGIN}/api/v1/health`, { timeout: 5000 });
+    await api.get('/api/v1/health', { timeout: 5000 });
     return true;
   } catch {
     return false;
   }
 }
 
-/** Detailed health info for the Dashboard card. */
 export async function getHealthDetail(): Promise<any> {
-  const r = await axios.get(`${API_ORIGIN}/api/v1/health`, { timeout: 5000 });
+  const r = await api.get('/api/v1/health', { timeout: 5000 });
   return r.data;
 }
 
@@ -116,15 +102,11 @@ function extractError(error: unknown, fallback: string): Error {
         }
         return new Error(String(detail));
       }
-      return new Error(
-        'Server error (' + error.response.status + '): ' + error.response.statusText
-      );
+      return new Error('Server error (' + error.response.status + '): ' + error.response.statusText);
     } else if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
       return new Error('Request timed out. Please try again.');
     } else if (error.code === 'ERR_NETWORK' || !error.response) {
-      return new Error(
-        'Cannot reach the backend server. Ensure FastAPI is running on http://localhost:8000.'
-      );
+      return new Error('Cannot reach the backend server.');
     }
   }
   return new Error(fallback);

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { analyseURL } from '../services/api';
-import { generatePdfReport } from '../utils/pdfGenerator';
 
 export default function URLAnalysisPage() {
   const [url, setUrl] = useState('');
@@ -17,7 +16,7 @@ export default function URLAnalysisPage() {
     <div className="space-y-6 max-w-4xl animate-fade-in">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Cyber Scan</h1>
-        <p className="text-slate-500 mt-1">Analyze URLs for phishing indicators using our rule-based engine.</p>
+        <p className="text-slate-500 mt-1">Analyze URLs for phishing indicators using rule-based heuristics.</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
@@ -40,37 +39,38 @@ export default function URLAnalysisPage() {
                 <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Analysis Result</p>
                 <h3 className={`text-2xl font-bold ${data.label === 'HIGH' ? 'text-red-700' : data.label === 'MEDIUM' ? 'text-amber-700' : 'text-emerald-700'}`}>{data.label} RISK</h3>
               </div>
-              <div className="text-right flex flex-col items-end">
+              <div className="text-right">
                 <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Score</p>
-                <p className="text-3xl font-bold text-slate-900">{(data.score * 100).toFixed(1)}%</p>
-                <button onClick={() => generatePdfReport('Cyber URL', data)} className="mt-2 text-xs font-semibold bg-white border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition shadow-sm">Download PDF</button>
+                <p className="text-3xl font-black text-slate-900">{(data.score * 100).toFixed(1)}%</p>
+                <p className="text-xs text-slate-500 font-semibold uppercase">Malicious Probability</p>
               </div>
             </div>
           </div>
           
           <div className="p-6 space-y-6">
             <div>
-              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Detected Indicators</h4>
+              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Extracted Evidence
+              </h4>
               <ul className="space-y-2">
                 {data.evidence?.map((ind: any, i: number) => (
-                  <li key={i} className="flex gap-3 text-sm text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-purple-500 font-bold">•</span> 
-                    <span><strong className="text-slate-900">{ind.code}:</strong> {ind.description}</span>
+                  <li key={i} className="flex flex-col gap-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-100">
+                    <div className="flex gap-2 items-center">
+                      <span className="text-purple-500 font-bold">•</span> 
+                      <strong className="text-slate-900">{ind.code}</strong>
+                    </div>
+                    <p className="pl-5 text-slate-600">{ind.description}</p>
+                    {ind.matched_text && (
+                      <div className="pl-5 mt-1">
+                        <span className="text-xs font-semibold text-slate-500">Matched Pattern: </span>
+                        <code className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">{ind.matched_text}</code>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
-            
-            {data.recommendations?.length > 0 && (
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Recommendations</h4>
-                <ul className="space-y-2">
-                  {data.recommendations.map((rec: string, i: number) => (
-                    <li key={i} className="flex gap-3 text-sm text-slate-600"><span className="text-slate-400">→</span> {rec}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
         </div>
       )}

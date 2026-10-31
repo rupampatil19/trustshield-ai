@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { analyseMessage } from '../services/api';
-import { generatePdfReport } from '../utils/pdfGenerator';
 
 export default function MessageAnalysisPage() {
   const [msg, setMsg] = useState('');
@@ -38,10 +37,10 @@ export default function MessageAnalysisPage() {
                 <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Result</p>
                 <h3 className={`text-2xl font-bold ${data.label === 'HIGH' ? 'text-red-700' : data.label === 'MEDIUM' ? 'text-amber-700' : 'text-emerald-700'}`}>{data.label} RISK</h3>
               </div>
-              <div className="text-right flex flex-col items-end">
+              <div className="text-right">
                 <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Score</p>
-                <p className="text-3xl font-bold text-slate-900">{(data.score * 100).toFixed(1)}%</p>
-                <button onClick={() => generatePdfReport('Cyber Message', data)} className="mt-2 text-xs font-semibold bg-white border border-slate-300 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition shadow-sm">Download PDF</button>
+                <p className="text-3xl font-black text-slate-900">{(data.score * 100).toFixed(1)}%</p>
+                <p className="text-xs text-slate-500 font-semibold uppercase">Fraud Probability</p>
               </div>
             </div>
           </div>

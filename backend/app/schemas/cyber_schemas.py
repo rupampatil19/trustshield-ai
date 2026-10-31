@@ -1,5 +1,5 @@
 """
-TrustShield AI — Cyber Resilience Backend
+TrustShield AI â€” Cyber Resilience Backend
 Pydantic schemas for API request/response models.
 
 These schemas define the public API contract.
@@ -27,11 +27,11 @@ class ScoreType(str, Enum):
     """Describes how the score was computed."""
     RULE_BASED = "rule_based"          # Deterministic rules, no ML
     THREAT_INTEL_CONFIRMED = "threat_intel_confirmed"  # External feed match
-    MOCK = "mock"                       # Test/fallback — never shown as real
+    MOCK = "mock"                       # Test/fallback â€” never shown as real
 
 
 # ============================================================
-# URL Scan — Request
+# URL Scan â€” Request
 # ============================================================
 
 class URLScanRequest(BaseModel):
@@ -53,7 +53,7 @@ class URLScanRequest(BaseModel):
 
 
 # ============================================================
-# URL Scan — Response
+# URL Scan â€” Response
 # ============================================================
 
 class URLIndicator(BaseModel):
@@ -112,7 +112,7 @@ class URLScanResponse(BaseModel):
         description="Final risk classification: LOW, MEDIUM, or HIGH"
     )
     score: float = Field(
-        description="Numeric risk score (0.0 – 1.0 range, rule-based)"
+        description="Numeric risk score (0.0 â€“ 1.0 range, rule-based)"
     )
     score_type: ScoreType = Field(
         description="How the score was computed"
@@ -151,7 +151,7 @@ class URLScanResponse(BaseModel):
 
 
 # ============================================================
-# Message Scan — Request
+# Message Scan â€” Request
 # ============================================================
 
 class MessageScanRequest(BaseModel):
@@ -176,7 +176,7 @@ class MessageScanRequest(BaseModel):
 
 
 # ============================================================
-# Message Scan — Response
+# Message Scan â€” Response
 # ============================================================
 
 class MessageIndicator(BaseModel):
@@ -215,7 +215,7 @@ class MessageScanResponse(BaseModel):
     label: RiskLevel = Field(
         description="Overall message risk: LOW, MEDIUM, or HIGH"
     )
-    score: float = Field(description="Numeric risk score (0.0 – 1.0)")
+    score: float = Field(description="Numeric risk score (0.0 â€“ 1.0)")
     score_type: ScoreType = Field(description="How the score was computed")
     evidence: List[MessageIndicator] = Field(
         default_factory=list,

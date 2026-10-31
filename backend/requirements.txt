@@ -24,3 +24,5 @@ bcrypt
 email-validator
 torch
 torchvision
+c2pa-python
+Pillow
