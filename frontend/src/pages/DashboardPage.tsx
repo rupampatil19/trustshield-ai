@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 export default function DashboardPage() {
   const [stats, setStats] = useState({ media: 0, cyber: 0, trust: 0, total: 0 });
 
@@ -9,7 +11,7 @@ export default function DashboardPage() {
     async function fetchStats() {
       try {
         const token = localStorage.getItem('ts_token');
-        const res = await axios.get('/api/v1/investigations', {
+        const res = await axios.(${API_ORIGIN}/api/v1/investigations', {
           headers: { Authorization: `Bearer ${token}` }
         });
         

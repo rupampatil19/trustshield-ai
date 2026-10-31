@@ -7,15 +7,30 @@ export default function MediaScanPage() {
   const [result, setResult] = useState<any>(null);
 
   async function handleScan(e: React.FormEvent) {
-    e.preventDefault(); if (!file) return;
-    setLoading(true); setResult(null);
+    e.preventDefault(); 
+    
+    if (!file) {
+      alert("Please select a file first.");
+      return;
+    }
+    
+    console.log("1. Starting scan for:", file.name);
+    setLoading(true); 
+    setResult(null);
+    
     try {
+      console.log("2. Sending to backend...");
       const res = await scanDeepfakeVideo(file);
+      console.log("3. Success! Response:", res);
       setResult(res);
     } catch (err: any) {
-      console.error(err);
+      console.error("4. API Error:", err);
+      alert("API Error: " + (err.message || String(err)));
       setResult({ error: err.message || "An unknown error occurred. Check backend logs." });
-    } finally { setLoading(false); }
+    } finally { 
+      console.log("5. Scan finished.");
+      setLoading(false); 
+    }
   }
 
   return (
@@ -103,7 +118,7 @@ export default function MediaScanPage() {
                   <div className={`p-4 rounded-xl border col-span-2 md:col-span-1 ${result.label?.toLowerCase() === 'flagged_for_review' ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
                      <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${result.label?.toLowerCase() === 'flagged_for_review' ? 'text-red-600' : 'text-emerald-600'}`}>Fake Probability</p>
                      <p className={`text-4xl font-black ${result.label?.toLowerCase() === 'flagged_for_review' ? 'text-red-700' : 'text-emerald-700'}`}>
-                        {result.aggregation?.mean_score !== undefined && result.aggregation?.mean_score !== null ? (result.aggregation.mean_score * 100).toFixed(1) + '%' : 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â'}
+                        {result.aggregation?.mean_score !== undefined && result.aggregation?.mean_score !== null ? (result.aggregation.mean_score * 100).toFixed(1) + '%' : 'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â'}
                      </p>
                   </div>
                   
